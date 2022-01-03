@@ -18,7 +18,7 @@ from os.path import abspath, dirname, join
 #
 # Python's default allowed recursion depth is 1000 but this isn't enough for
 # building docs/ref/settings.txt sometimes.
-# https://groups.google.com/d/topic/sphinx-dev/MtRf64eGtv4/discussion
+# https://groups.google.com/g/sphinx-dev/c/MtRf64eGtv4/discussion
 sys.setrecursionlimit(2000)
 
 # Make sure we get the version of this copy of Django
@@ -99,7 +99,7 @@ else:
     release = django_release()
 
 # The "development version" of Django
-django_next_version = '3.2'
+django_next_version = '4.0'
 
 extlinks = {
     'bpo': ('https://bugs.python.org/issue%s', 'bpo-'),
@@ -241,7 +241,6 @@ modindex_common_prefix = ["django."]
 # Appended to every page
 rst_epilog = """
 .. |django-users| replace:: :ref:`django-users <django-users-mailing-list>`
-.. |django-core-mentorship| replace:: :ref:`django-core-mentorship <django-core-mentorship-mailing-list>`
 .. |django-developers| replace:: :ref:`django-developers <django-developers-mailing-list>`
 .. |django-announce| replace:: :ref:`django-announce <django-announce-mailing-list>`
 .. |django-updates| replace:: :ref:`django-updates <django-updates-mailing-list>`

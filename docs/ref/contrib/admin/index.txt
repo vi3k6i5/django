@@ -1586,14 +1586,16 @@ templates used by the :class:`ModelAdmin` views:
             search_fields = ('name',)
 
             def get_search_results(self, request, queryset, search_term):
-                queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+                queryset, may_have_duplicates = super().get_search_results(
+                    request, queryset, search_term,
+                )
                 try:
                     search_term_as_int = int(search_term)
                 except ValueError:
                     pass
                 else:
                     queryset |= self.model.objects.filter(age=search_term_as_int)
-                return queryset, use_distinct
+                return queryset, may_have_duplicates
 
     This implementation is more efficient than ``search_fields =
     ('name', '=age')`` which results in a string comparison for the numeric
@@ -2261,7 +2263,7 @@ Adding custom validation to the admin
 
 You can also add custom validation of data in the admin. The automatic admin
 interface reuses :mod:`django.forms`, and the ``ModelAdmin`` class gives you
-the ability define your own form::
+the ability to define your own form::
 
     class ArticleAdmin(admin.ModelAdmin):
         form = MyArticleAdminForm
@@ -2568,7 +2570,7 @@ on whichever model contains the actual reference to the
 :class:`~django.db.models.ManyToManyField`. Depending on your ``ModelAdmin``
 definition, each many-to-many field in your model will be represented by a
 standard HTML ``<select multiple>``, a horizontal or vertical filter, or a
-``raw_id_admin`` widget. However, it is also possible to replace these
+``raw_id_fields`` widget. However, it is also possible to replace these
 widgets with inlines.
 
 Suppose we have the following models::

@@ -403,6 +403,21 @@ class ModelDefaultAutoFieldTests(SimpleTestCase):
 
         self.assertEqual(checks.run_checks(app_configs=self.apps.get_app_configs()), [])
 
+    def test_skipped_on_model_with_invalid_app_label(self):
+        class Model(models.Model):
+            class Meta:
+                app_label = 'invalid_app_label'
+
+        self.assertEqual(Model.check(), [])
+
+    def test_skipped_on_abstract_model(self):
+        class Abstract(models.Model):
+            class Meta:
+                abstract = True
+
+        # Call .check() because abstract models are not registered.
+        self.assertEqual(Abstract.check(), [])
+
     def test_explicit_inherited_parent_link(self):
         class Parent(models.Model):
             id = models.AutoField(primary_key=True)

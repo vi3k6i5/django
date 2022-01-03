@@ -2173,9 +2173,9 @@ exists in the database, an :exc:`~django.db.IntegrityError` is raised.
 
 This method inserts the provided list of objects into the database in an
 efficient manner (generally only 1 query, no matter how many objects there
-are)::
+are), and returns created objects as a list, in the same order as provided::
 
-    >>> Entry.objects.bulk_create([
+    >>> objs = Entry.objects.bulk_create([
     ...     Entry(headline='This is a test'),
     ...     Entry(headline='This is only a test'),
     ... ])
@@ -2225,8 +2225,6 @@ normally supports it).
 
 .. _MySQL documentation: https://dev.mysql.com/doc/refman/en/sql-mode.html#ignore-strict-comparison
 .. _MariaDB documentation: https://mariadb.com/kb/en/ignore/
-
-Returns ``objs`` as cast to a list, in the same order as provided.
 
 .. versionchanged:: 3.1
 
@@ -2301,7 +2299,10 @@ database query like ``count()`` would.
 
 Takes a list of field values (``id_list``) and the ``field_name`` for those
 values, and returns a dictionary mapping each value to an instance of the
-object with the given field value. If ``id_list`` isn't provided, all objects
+object with the given field value. No
+:exc:`django.core.exceptions.ObjectDoesNotExist` exceptions will ever be raised
+by ``in_bulk``; that is, any ``id_list`` value not matching any instance will
+simply be ignored. If ``id_list`` isn't provided, all objects
 in the queryset are returned. ``field_name`` must be a unique field or a
 distinct field (if there's only one field specified in :meth:`distinct`).
 ``field_name`` defaults to the primary key.
@@ -2647,7 +2648,8 @@ unique field in the order that is specified without conflicts. For example::
 
 .. note::
 
-    If the ``order_by()`` clause contains annotations, it will be ignored.
+    ``order_by()`` clause will be ignored if it contains annotations, inherited
+    fields, or lookups spanning relations.
 
 ``delete()``
 ~~~~~~~~~~~~
